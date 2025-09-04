@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Candidates</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gray-100 p-10">
+<h1 class="text-3xl font-bold text-center mb-6 text-blue-600">Candidates</h1>
+
+<div class="bg-white shadow-md rounded-xl p-6 mb-8 max-w-xl mx-auto">
+    <form id="candidateForm" class="space-y-4">
+        <input type="text" id="name" placeholder="Full Name" class="w-full px-4 py-2 border rounded-lg" required />
+        <input type="email" id="email" placeholder="Email" class="w-full px-4 py-2 border rounded-lg" required />
+        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">Add Candidate</button>
+    </form>
+</div>
+
+<div class="overflow-x-auto bg-white rounded-xl shadow-md p-6">
+    <table class="w-full text-left border-collapse">
+        <thead>
+        <tr class="bg-blue-100">
+            <th class="p-3">ID</th>
+            <th class="p-3">Name</th>
+            <th class="p-3">Email</th>
+            <th class="p-3">Resume</th>
+            <th class="p-3">Actions</th>
+        </tr>
+        </thead>
+        <tbody id="candidatesTable"></tbody>
+    </table>
+</div>
+
+<script>
+    const API_BASE = "http://localhost:8080/api/candidates";
+
+    async function loadCandidates() {
+        const res = await fetch(API_BASE);
+        const candidates = await res.json();
+        document.getElementById("candidatesTable").innerHTML = candidates.map(c => `
+            <tr class="border-b hover:bg-gray-50">
+                <td class="p-3">${c.id}</td>
+                <td class="p-3">${c.name}</td>
+                <td class="p-3">${c.email}</td>
+                <td class="p-3">${c.resumePath ? `<a href="${c.resumePath}" target="_blank" class="text-blue-600">View Resume</a>` : "No Resume"}</td>
+                <td class="p-3">
+                    <form onsubmit="uploadResume(event, ${c.id})" class="flex items-center space-x-2">
+                        <input type="file" name="resume" required class="border rounded px-2 py-1" />
+                        <button type="submit" class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700">Upload</button>
+                    </form>
+                </td>
+            </tr>
+        `).join("");
+    }
+
+    document.getElementById("candidateForm").addEventListener("submit", async e => {
+        e.preventDefault();
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        await fetch(API_BASE, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, email })
+        });
+        loadCandidates();
+    });
+
+    async function uploadResume(event, candidateId) {
+        event.preventDefault();
+        const fileInput = event.target.querySelector("input[type='file']");
+        const formData = new FormData();
+        formData.append("file", fileInput.files[0]);
+        await fetch(`${API_BASE}/${candidateId}/upload-resume`, { method: "POST", body: formData });
+        loadCandidates();
+    }
+
+    loadCandidates();
+</script>
+</body>
+</html>

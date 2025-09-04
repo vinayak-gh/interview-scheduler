@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Interviews - Interview Scheduler</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-cover bg-center"
+      style="background-image: url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d');">
+
+<!-- Overlay -->
+<div class="absolute inset-0 bg-black/70"></div>
+
+<!-- Page Content -->
+<div class="relative z-10 max-w-6xl mx-auto px-6 py-10">
+    <h1 class="text-4xl font-extrabold text-center mb-4 bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
+        Scheduled Interviews
+    </h1>
+    <p class="text-center text-gray-200 mb-8">
+        Here’s a list of all interviews created in the system. Track details easily.
+    </p>
+
+    <!-- Table Container -->
+    <div class="overflow-x-auto bg-white/95 shadow-2xl rounded-2xl p-6">
+        <table class="w-full text-left border-collapse">
+            <thead>
+            <tr class="bg-gradient-to-r from-green-500 via-blue-500 to-purple-600 text-white">
+                <th class="py-3 px-4">Candidate</th>
+                <th class="py-3 px-4">Interviewer</th>
+                <th class="py-3 px-4">Date & Time</th>
+                <th class="py-3 px-4">Mode</th>
+                <th class="py-3 px-4">Location</th>
+                <th class="py-3 px-4">Notes</th>
+            </tr>
+            </thead>
+            <tbody id="interviewsTable" class="text-gray-700">
+            <!-- Rows will load dynamically -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Back -->
+    <div class="text-center mt-6">
+        <a href="dashboard.html" class="text-white/90 hover:underline">← Back to Dashboard</a>
+    </div>
+</div>
+
+<script>
+    async function loadInterviews() {
+      try {
+        const res = await fetch("http://localhost:8080/api/interviews");
+        if (!res.ok) throw new Error("Failed to fetch interviews");
+        const data = await res.json();
+
+        const table = document.getElementById("interviewsTable");
+        if (data.length === 0) {
+          table.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-gray-500">No interviews scheduled yet.</td></tr>`;
+          return;
+        }
+
+        table.innerHTML = data.map(i => `
+          <tr class="border-b hover:bg-gray-100">
+            <td class="py-3 px-4">${i.candidate?.name || "N/A"}</td>
+            <td class="py-3 px-4">${i.interviewer?.name || "N/A"}</td>
+            <td class="py-3 px-4">
+              ${i.scheduledAt
+                ? new Date(i.scheduledAt).toLocaleString()
+                : (i.interviewDate + " " + (i.interviewTime || ""))}
+            </td>
+            <td class="py-3 px-4">${i.mode || "-"}</td>
+            <td class="py-3 px-4">${i.location || "-"}</td>
+            <td class="py-3 px-4">${i.notes || "-"}</td>
+          </tr>
+        `).join("");
+      } catch (err) {
+        console.error(err);
+        alert("Error loading interviews: " + err.message);
+      }
+    }
+
+    loadInterviews();
+</script>
+</body>
+</html>

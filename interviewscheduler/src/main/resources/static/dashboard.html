@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Dashboard - Interview Scheduler</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-cover bg-center"
+      style="background-image: url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d');">
+<!-- Overlay -->
+<div class="absolute inset-0 bg-black bg-opacity-70"></div>
+
+<!-- Dashboard Content -->
+<div class="relative z-10 p-10">
+    <!-- Header -->
+    <h1 class="text-4xl font-extrabold text-center mb-4 bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
+        Admin Dashboard
+    </h1>
+    <p class="text-center text-gray-200 mb-10 max-w-2xl mx-auto">
+        Welcome to your <span class="text-green-400 font-semibold">Interview Scheduler</span> dashboard.
+        Manage <span class="text-blue-400 font-semibold">candidates</span>,
+        <span class="text-purple-400 font-semibold">schedule interviews</span>, and
+        track <span class="text-pink-400 font-semibold">interviews</span> all in one place.
+    </p>
+
+    <!-- Dashboard Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <!-- Candidates -->
+        <a href="candidates.html"
+           class="bg-white rounded-2xl shadow-xl p-6 text-center transform hover:scale-105 transition">
+            <h2 class="text-xl font-bold text-blue-600">Candidates</h2>
+            <p class="mt-2 text-gray-600">View, add, and manage all registered candidates.</p>
+        </a>
+
+        <!-- Schedule (NEW) -->
+        <a href="schedule.html"
+           class="bg-white rounded-2xl shadow-xl p-6 text-center transform hover:scale-105 transition">
+            <h2 class="text-xl font-bold bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 bg-clip-text text-transparent">
+                Schedule
+            </h2>
+            <p class="mt-2 text-gray-600">Create a new interview: pick candidate, interviewer, date & time.</p>
+        </a>
+
+        <!-- Interviews -->
+        <a href="interviews.html"
+           class="bg-white rounded-2xl shadow-xl p-6 text-center transform hover:scale-105 transition">
+            <h2 class="text-xl font-bold text-purple-600">Interviews</h2>
+            <p class="mt-2 text-gray-600">See upcoming and past interview sessions.</p>
+        </a>
+    </div>
+
+    <!-- Logout -->
+    <div class="mt-12 text-center">
+        <a href="login.html"
+           class="inline-block bg-gradient-to-r from-red-500 via-pink-500 to-purple-600 text-white px-6 py-2 rounded-xl shadow-lg hover:opacity-90 transition font-semibold">
+            Logout
+        </a>
+    </div>
+</div>
+</body>
+</html>

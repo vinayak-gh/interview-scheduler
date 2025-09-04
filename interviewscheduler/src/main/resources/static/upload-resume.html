@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Resume</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+<nav class="bg-blue-600 p-4 shadow-md">
+    <div class="container mx-auto flex justify-between items-center">
+        <a href="dashboard.html" class="text-white font-bold text-lg">Interview Scheduler</a>
+        <div class="space-x-6">
+            <a href="schedule.html" class="text-white hover:text-gray-200">Schedule Interview</a>
+            <a href="interview-list.html" class="text-white hover:text-gray-200">View Interviews</a>
+            <a href="upload-resume.html" class="text-white hover:text-gray-200">Upload Resume</a>
+        </div>
+    </div>
+</nav>
+
+<div class="flex items-center justify-center min-h-screen">
+    <div class="bg-white shadow-lg rounded-2xl p-8 w-96">
+        <h1 class="text-xl font-bold mb-6 text-center">Upload Resume</h1>
+        <form id="resumeForm" class="space-y-4" enctype="multipart/form-data">
+            <input type="number" id="candidateId" placeholder="Candidate ID" class="w-full px-4 py-2 border rounded-xl" required />
+            <input type="file" id="resumeFile" accept=".pdf,.doc,.docx" class="w-full px-4 py-2 border rounded-xl" required />
+            <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-xl hover:bg-green-700">
+                Upload
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById("resumeForm").addEventListener("submit", async function(e) {
+        e.preventDefault();
+
+        const candidateId = document.getElementById("candidateId").value;
+        const fileInput = document.getElementById("resumeFile").files[0];
+
+        if (!fileInput) {
+            alert("⚠️ Please select a file!");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", fileInput);
+
+        try {
+            const response = await fetch(`http://localhost:8080/api/candidates/${candidateId}/upload-resume`, {
+                method: "POST",
+                body: formData
+            });
+
+            let result;
+            try {
+                result = await response.text(); // backend returns plain string
+            } catch (err) {
+                result = "Server response not readable";
+            }
+
+            if (response.ok) {
+                alert("✅ " + result);
+            } else {
+                alert("❌ Failed to upload resume: " + result);
+            }
+        } catch (error) {
+            alert("⚠️ Request failed: " + error.message);
+        }
+    });
+</script>
+
+</body>
+</html>

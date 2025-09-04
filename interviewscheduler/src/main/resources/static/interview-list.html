@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Interview List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+<nav class="bg-blue-600 p-4 shadow-md">
+    <div class="container mx-auto flex justify-between items-center">
+        <a href="dashboard.html" class="text-white font-bold text-lg">Interview Scheduler</a>
+        <div class="space-x-6">
+            <a href="schedule.html" class="text-white hover:text-gray-200">Schedule Interview</a>
+            <a href="interview-list.html" class="text-white hover:text-gray-200">View Interviews</a>
+        </div>
+    </div>
+</nav>
+
+<div class="max-w-4xl mx-auto bg-white shadow-lg rounded-2xl p-6">
+    <h1 class="text-2xl font-bold mb-6 text-center">Scheduled Interviews</h1>
+    <table class="w-full border-collapse border border-gray-300">
+        <thead>
+        <tr class="bg-gray-200">
+            <th class="border px-4 py-2">ID</th>
+            <th class="border px-4 py-2">Candidate</th>
+            <th class="border px-4 py-2">Interviewer</th>
+            <th class="border px-4 py-2">Interview Time</th>
+        </tr>
+        </thead>
+        <tbody id="interviewTableBody">
+        <!-- Data will be loaded here dynamically -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+    async function loadInterviews() {
+      try {
+        const response = await fetch("http://localhost:8080/api/interviews");
+        const interviews = await response.json();
+
+        const tbody = document.getElementById("interviewTableBody");
+        tbody.innerHTML = "";
+
+        interviews.forEach(interview => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td class="border px-4 py-2">${interview.id}</td>
+            <td class="border px-4 py-2">${interview.candidate?.name || "N/A"}</td>
+            <td class="border px-4 py-2">${interview.interviewer?.name || "N/A"}</td>
+            <td class="border px-4 py-2">${interview.interviewTime}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      } catch (error) {
+        alert("⚠️ Failed to load interviews: " + error.message);
+      }
+    }
+
+    // Load interviews when page opens
+    loadInterviews();
+</script>
+</body>
+</html>
